@@ -56,6 +56,12 @@ Saved models:
 - `data/models/domestic_multiplier_rf.joblib`
 - `data/models/intl_dom_ratio_rf.joblib`
 
+### Evaluate current models
+
+```bash
+python3 scripts/evaluate_models.py
+```
+
 ## What this project is for
 
 - Collect and clean historical box-office and movie metadata.
