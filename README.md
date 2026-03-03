@@ -24,6 +24,35 @@ Expected example output:
 {"title":"Example Movie","budget":10000000,"predicted_profitable":false,"probability":0.18}
 ```
 
+## V1 data + model pipeline (Universal bootstrap)
+
+This repository now includes a first-pass historical pipeline designed to:
+- pull released Universal titles from The Numbers within a date window,
+- crawl each movie's daily domestic table,
+- build a training table with early-run features,
+- train two baseline regressors:
+  - domestic multiplier (`final_domestic / opening_weekend`)
+  - international/domestic ratio (`final_international / final_domestic`)
+
+### Build training data
+
+```bash
+python3 scripts/build_training_data.py --years 3
+```
+
+Outputs are stored in:
+- `data/processed/boxoffice.sqlite` (raw + transformed tables)
+
+### Train baseline models
+
+```bash
+python3 scripts/train_baseline_models.py
+```
+
+Saved models:
+- `data/models/domestic_multiplier_rf.joblib`
+- `data/models/intl_dom_ratio_rf.joblib`
+
 ## What this project is for
 
 - Collect and clean historical box-office and movie metadata.

@@ -1,2 +1,7 @@
 beautifulsoup4==4.12.3
+joblib==1.5.2
+numpy==2.3.3
+pandas==2.3.2
+playwright==1.55.0
 requests==2.32.3
+scikit-learn==1.7.2
