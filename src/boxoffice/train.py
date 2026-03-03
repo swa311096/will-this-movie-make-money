@@ -51,8 +51,9 @@ def _build_pipeline() -> Pipeline:
 
 
 def _evaluate(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
-    eps = 1e-8
-    mape = np.mean(np.abs((y_true - y_pred) / np.maximum(np.abs(y_true), eps))) * 100
+    # Clamp denominator to avoid unstable percentages for near-zero targets.
+    denom = np.maximum(np.abs(y_true), 1.0)
+    mape = np.mean(np.abs((y_true - y_pred) / denom)) * 100
     mae = mean_absolute_error(y_true, y_pred)
     return {"mae": float(mae), "mape_pct": float(mape)}
 

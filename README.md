@@ -39,6 +39,8 @@ This repository now includes a first-pass historical pipeline designed to:
 ```bash
 playwright install chromium
 python3 scripts/build_training_data.py --years 3
+# if requests get blocked on some pages:
+python3 scripts/build_training_data.py --years 3 --use-playwright
 ```
 
 Outputs are stored in:
