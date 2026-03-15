@@ -162,5 +162,6 @@ Each phase should produce:
 1. code
 2. a short explanation
 3. an eval or verification step
+4. a short public post draft
 
 That prevents the project from turning into a pile of disconnected experiments.

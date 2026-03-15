@@ -4,6 +4,8 @@ This is the exact module sequence for the project.
 
 The ordering matters. Each module depends on earlier ones.
 
+If a keyword feels unfamiliar, check `docs/00-overview.md` first and `docs/glossary.md` for the short definition.
+
 ## Module 1: AI Systems Map
 
 Learn the moving parts of an AI app:
@@ -59,7 +61,7 @@ Learn:
 Outcome:
 You understand how a system can find relevant information instead of relying only on the prompt.
 
-## Module 5: RAG
+## Module 5: RAG (Retrieval-Augmented Generation)
 
 Learn:
 
@@ -100,7 +102,7 @@ Learn:
 Outcome:
 You can build agentic behavior intentionally instead of using loops blindly.
 
-## Module 8: MCP
+## Module 8: MCP (Model Context Protocol)
 
 Learn:
 

@@ -9,13 +9,16 @@ This repository is a learning-first AI project. The goal is not to collect rando
 - how skills and agent instructions work
 - how to write evals
 - how to talk about these topics clearly
+- how to turn learning into clear public writing
 
 ## What This Repo Contains
 
 - `docs/00-overview.md`: mental model for the whole system
+- `docs/glossary.md`: short definitions of core terms used across the repo
 - `docs/01-learning-modules.md`: exact learning curriculum
 - `docs/02-project-blueprint.md`: the example project we will build
 - `docs/03-roadmap.md`: phase-by-phase implementation plan
+- `posts/`: public post drafts derived from what we learn and build
 
 ## How We Will Work
 
@@ -26,6 +29,7 @@ Why:
 - concepts stick better when linked to working code
 - evals, prompts, skills, and architecture stay versioned together
 - showcase value is stronger when explanation and implementation live side by side
+- public writing becomes easier because every milestone already has a source draft
 
 ## Project Direction
 
@@ -47,14 +51,27 @@ By the end of this project, you should be able to:
 - implement each of those concepts in code
 - justify when to use each pattern and when not to
 - demo the project as a coherent showcase instead of disconnected experiments
+- publish concise posts that explain what you learned and built
+
+## Working Loop
+
+We will use the same loop for each major milestone:
+
+1. learn the concept
+2. implement it in the project
+3. verify it with an eval or test
+4. write a short public post draft
+
+That keeps the repo useful for both learning and public communication.
 
 ## Next Step
 
 Read the docs in order:
 
 1. `docs/00-overview.md`
-2. `docs/01-learning-modules.md`
-3. `docs/02-project-blueprint.md`
-4. `docs/03-roadmap.md`
+2. `docs/glossary.md`
+3. `docs/01-learning-modules.md`
+4. `docs/02-project-blueprint.md`
+5. `docs/03-roadmap.md`
 
 After that, we will start Phase 1 implementation.
