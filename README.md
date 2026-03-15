@@ -15,6 +15,7 @@ This repository is a learning-first AI project. The goal is not to collect rando
 
 - `docs/00-overview.md`: mental model for the whole system
 - `docs/glossary.md`: short definitions of core terms used across the repo
+- `docs/history/`: staged history of LLMs and modern AI systems
 - `docs/01-learning-modules.md`: exact learning curriculum
 - `docs/02-project-blueprint.md`: the example project we will build
 - `docs/03-roadmap.md`: phase-by-phase implementation plan
@@ -70,8 +71,9 @@ Read the docs in order:
 
 1. `docs/00-overview.md`
 2. `docs/glossary.md`
-3. `docs/01-learning-modules.md`
-4. `docs/02-project-blueprint.md`
-5. `docs/03-roadmap.md`
+3. `docs/history/README.md`
+4. `docs/01-learning-modules.md`
+5. `docs/02-project-blueprint.md`
+6. `docs/03-roadmap.md`
 
 After that, we will start Phase 1 implementation.
