@@ -18,42 +18,23 @@ A neural network is a function that maps an input to an output by passing data t
 
 Each node takes in some numbers, multiplies them by weights, adds them up, and passes the result to the next layer.
 
-```mermaid
-graph LR
-    i1((x1)) --> h1((h1))
-    i1 --> h2((h2))
-    i1 --> h3((h3))
-    i2((x2)) --> h1
-    i2 --> h2
-    i2 --> h3
-    i3((x3)) --> h1
-    i3 --> h2
-    i3 --> h3
-    h1 --> o((output))
-    h2 --> o
-    h3 --> o
+![A neural network with 4 inputs, 2 hidden layers, and 1 output](../../assets/neural-network.png)
 
-    subgraph Input Layer
-        i1
-        i2
-        i3
-    end
-    subgraph Hidden Layer
-        h1
-        h2
-        h3
-    end
-    subgraph Output Layer
-        o
-    end
-```
+This network has:
 
-The connections between nodes have **weights** — numbers that control how much influence one node has on the next.
+- **Input layer**: 4 nodes (a, b, c, d) — each receives one number from the input
+- **Hidden layer 1**: 3 nodes — each takes all 4 inputs, multiplies each by a weight, sums them up
+- **Hidden layer 2**: 3 nodes — same process, takes all outputs from hidden layer 1
+- **Output layer**: 1 node — produces the final prediction
+
+The connections between nodes have **weights** — numbers that control how much influence one node has on the next. Every arrow in the diagram is a weight.
+
+The curved arrows on the right labeled "Adjustments of weights through back propagation" show what happens after a prediction is made — the error flows back through the network and each weight gets nudged.
 
 For example, in a sentiment classifier:
 
-- Input: the embedding vectors of each word in a sentence
-- Hidden layer: internal representations the model builds
+- Input: the embedding vectors of each word in a sentence (4 numbers → 4 input nodes)
+- Hidden layers: internal representations the model builds from those inputs
 - Output: a single number (positive or negative)
 
 At the start, all weights are random. The model knows nothing. It will make bad predictions.
