@@ -40,7 +40,7 @@ At each step, the model takes:
 
 And produces a new hidden state.
 
-![RNN unrolled over time — each cell takes a word input and the previous hidden state](assets/rnn-unrolled.png)
+RNN unrolled over time — each cell takes a word input and the previous hidden state
 
 Reading the diagram left to right:
 
@@ -70,12 +70,14 @@ Each step updates the hidden state. Step 3 cannot run until step 2 is done.
 **Negation in sentiment:**
 
 BoW for "The movie was not bad":
+
 ```
 vector: {movie:1, not:1, bad:1}
 "bad" scores negative → predicted: negative  ← wrong
 ```
 
 RNN for "The movie was not bad":
+
 ```
 step 4: reads "not"  → h_4 carries negation signal
 step 5: reads "bad"  → h_5 combines negation + negative word
@@ -130,13 +132,15 @@ The cell state runs like a conveyor belt through the sequence. Information can b
 
 LSTMs add three gates:
 
-| Gate | Question it answers | Effect on the tourist sentence |
-|---|---|---|
-| Forget gate | What should I erase from long-term memory? | Erases "Spain", "three airports" — keeps "tourist = subject" |
-| Input gate | What new information should I write to long-term memory? | Adds "reached hotel" — context now: "tourist reached hotel" |
-| Output gate | What part of memory should I expose right now? | Exposes "tourist" as subject when predicting what was reserved |
 
-![RNN vs LSTM on the tourist sentence — RNN hidden state fades, LSTM cell state retains tourist](assets/rnn-vs-lstm-tourist.png)
+| Gate        | Question it answers                                      | Effect on the tourist sentence                                 |
+| ----------- | -------------------------------------------------------- | -------------------------------------------------------------- |
+| Forget gate | What should I erase from long-term memory?               | Erases "Spain", "three airports" — keeps "tourist = subject"   |
+| Input gate  | What new information should I write to long-term memory? | Adds "reached hotel" — context now: "tourist reached hotel"    |
+| Output gate | What part of memory should I expose right now?           | Exposes "tourist" as subject when predicting what was reserved |
+
+
+RNN vs LSTM on the tourist sentence — RNN hidden state fades, LSTM cell state retains tourist
 
 Left panel: RNN hidden state bar fades to near-white by "hotel ___" — "tourist" is gone. Right panel: LSTM cell state bar stays uniformly dark — "tourist" is retained through every step.
 
@@ -166,41 +170,75 @@ A basic RNN at this point would have a hidden state dominated by "hotel", "had b
 
 ## How Does the Gate Know What to Keep?
 
-The gate table says "erase Spain, keep tourist" — that sounds like pre-programmed knowledge. It is not.
+The table above says "erase Spain, keep tourist" — but who decided that? No one programmed that rule. Here is how it actually works, using the tourist sentence step by step.
 
-Each gate is a small neural network. At every step it takes:
-
-1. the current word's embedding
-2. the previous hidden state
-
-It runs them through a linear layer and a **sigmoid function**, producing a value between 0 and 1 for every dimension of the cell state:
+The sentence being processed:
 
 ```
-forget gate output = sigmoid( W_f × [current_word, prev_hidden] + b_f )
+"The tourist who arrived from Spain, after a long flight through three different airports,
+ finally reached the hotel where the ___ had been reserved."
 ```
 
-- `0.0` → erase this dimension completely
-- `1.0` → keep this dimension completely
-- `0.3` → keep 30%, erase 70%
+**Step 1: The cell state is a list of numbers**
 
-That output vector is multiplied element-wise with the cell state. Dimensions where the gate output is near 0 get erased. Near 1, they survive.
+The cell state is a vector — say, 256 numbers. Think of it as 256 slots.
 
-**How does it learn which dimensions to protect?**
-
-Through backpropagation. The gate weights start random and adjust over training. Over thousands of sentences, the model learns:
-
-- subject information ("tourist", "she", "the company") is almost always needed later — for verb agreement, co-reference, predicate completion
-- prepositional details ("from Spain", "via three airports") rarely affect the sentence's end
-
-After training, when reading "from Spain", the forget gate might produce:
+After the LSTM reads the first two words — "The tourist" — the cell state might look like:
 
 ```
-cell dimension encoding "current subject" → gate output: 0.94  (keep)
-cell dimension encoding "recent location" → gate output: 0.11  (erase)
-cell dimension encoding "verb tense"      → gate output: 0.87  (keep)
+Current word: "tourist"
+Previous hidden state: carries signal from "The"
+
+Cell state after this step:
+  slot 0:   0.82   ← something about "subject of the sentence"
+  slot 1:  -0.11   ← something about verb tense
+  slot 2:   0.67   ← something about noun type
+  ...
+  slot 255: 0.03
 ```
 
-The gate did not know Spain was unimportant. It learned that words following "arrived from" rarely affect the subject slot at the end of a sentence.
+No one labeled these slots. The model figured out through training that it was useful to store "subject" information in slot 0. The slots have no names — they just hold numbers, and the model learned to use them in a way that helps it predict correctly.
+
+**Step 2: The forget gate produces one number per slot — grounded in the current word**
+
+The sentence continues. Now the model is at:
+
+```
+Words read so far:  "The tourist who arrived from ___"
+Current word:       "Spain"
+Previous hidden state: carries compressed signal of "The tourist who arrived from"
+```
+
+The forget gate takes these two inputs — `embed("Spain")` and the previous hidden state — and produces one number between 0 and 1 for each of the 256 slots:
+
+```
+forget gate output at the word "Spain":
+  slot 0:  0.94   ← keep  (this is where "tourist = subject" lives)
+  slot 1:  0.87   ← keep  (verb tense still relevant)
+  slot 2:  0.11   ← erase (location detail — not needed for predicting the end)
+  ...
+```
+
+The gate is not reading "Spain" and thinking "this is a country, countries are not important." It is reading the embedding of "Spain" combined with the hidden state's signal of "arrived from" — and that combined pattern, after training, produces low values for the location slot.
+
+**Step 3: The cell state is updated slot by slot**
+
+The forget gate output is multiplied with the cell state, one slot at a time:
+
+```
+new cell state = forget gate output × old cell state
+
+slot 0:  0.94 × 0.82  =  0.77   ← tourist signal mostly kept
+slot 1:  0.87 × (-0.11) = -0.10  ← verb tense mostly kept
+slot 2:  0.11 × 0.67  =  0.07   ← location detail nearly erased
+```
+
+Slots where gate output is near 1 → cell value survives.
+Slots where gate output is near 0 → cell value is wiped.
+
+This repeats at every word. When the model reads "after a long flight through three different airports", the forget gate again produces near-0 for the location/detail slots and near-1 for the subject slot. By the time the model reaches "the hotel where the ___", slot 0 still holds 0.70-something — "tourist" has survived.
+
+The gate did not know Spain was unimportant. It learned — through backpropagation across thousands of sentences — that words following "arrived from" rarely change what is needed at the end of a sentence.
 
 **GRUs** (Gated Recurrent Units) simplified this into two gates instead of three with comparable results and less computation.
 
@@ -214,6 +252,17 @@ LSTMs solved the forgetting problem within a single sequence. A model could now 
 
 But one major task remained out of reach: mapping a sequence in one language to a sequence in another.
 
-Translation required reading an entire source sentence, building a representation of it, and then generating a new sentence in a different language. That called for a different architecture built on top of sequence models.
+Consider:
+
+```
+Input:  "The cat sat on the mat."
+Output: "Le chat était assis sur le tapis."
+```
+
+An LSTM can read the English sentence and build up a hidden state. But then what? The decoder needs to generate French — word by word — from whatever the encoder left behind. The entire meaning of the English sentence has to be compressed into one fixed-size vector before a single French word is produced.
+
+For 6 words that is manageable. For the tourist sentence — 28 words, with details spread across the whole sentence — the compressed vector loses too much. Words processed early barely survive to the end.
+
+Translation required a different architecture built on top of sequence models, one that did not force the entire source sentence through a single bottleneck.
 
 That is where the next chapter begins.
