@@ -1,4 +1,4 @@
-# 05: How Models Learn
+# 05: How Neural Networks Learn
 
 Before sequence models make sense, one concept needs to be in place: how a neural network actually learns from data.
 

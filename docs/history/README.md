@@ -61,6 +61,7 @@ and understand what those claims are actually pointing at.
 - `01-before-transformers/05-how-models-learn.md`
 - `01-before-transformers/06-sequence-models-and-attention.md`
 
+
 ### Part 2: Transformers and Scaling
 
 - `02-transformers-and-scaling.md`
