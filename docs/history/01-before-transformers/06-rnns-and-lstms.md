@@ -40,7 +40,7 @@ At each step, the model takes:
 
 And produces a new hidden state.
 
-RNN unrolled over time — each cell takes a word input and the previous hidden state
+![RNN unrolled over time — each cell takes a word input and the previous hidden state](assets/rnn-unrolled.png)
 
 Reading the diagram left to right:
 
@@ -140,7 +140,7 @@ LSTMs add three gates:
 | Output gate | What part of memory should I expose right now?           | Exposes "tourist" as subject when predicting what was reserved |
 
 
-RNN vs LSTM on the tourist sentence — RNN hidden state fades, LSTM cell state retains tourist
+![RNN vs LSTM on the tourist sentence — RNN hidden state fades, LSTM cell state retains tourist](assets/rnn-vs-lstm-tourist.png)
 
 Left panel: RNN hidden state bar fades to near-white by "hotel ___" — "tourist" is gone. Right panel: LSTM cell state bar stays uniformly dark — "tourist" is retained through every step.
 
