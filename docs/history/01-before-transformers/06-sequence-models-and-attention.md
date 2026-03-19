@@ -134,6 +134,10 @@ LSTMs add three gates:
 | Input gate | What new information should I write to long-term memory? | Adds: "reached hotel" — context is now "tourist reached hotel" |
 | Output gate | What part of memory should I expose to the next step? | Exposes: "tourist" as the relevant subject when predicting what was reserved |
 
+![RNN vs LSTM on the tourist sentence — RNN hidden state fades, LSTM cell state retains "tourist"](assets/rnn-vs-lstm-tourist.png)
+
+The diagram shows the same sentence processed by both architectures. On the left, the RNN hidden state (the bar below) fades from dark to light — "tourist" is gone by the time the model reaches "hotel ___". On the right, the LSTM cell state (top bar) stays consistently dark across all steps — "tourist" is retained. The hidden state (short-term) varies normally, but the cell state is what carries the long-range information.
+
 **What changes across the sentence:**
 
 ```
